@@ -1,0 +1,7 @@
+services:
+  contact-back:
+    image: contacts
+    build:
+      context: .
+    ports:
+      - 8000:8000

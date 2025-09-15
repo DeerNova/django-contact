@@ -7,20 +7,72 @@
 </head>
 <body>
 
-  <h1>Contacts list😊</h1>
+  <h1>Contacts list😊{{user.username}}</h1>
+  <form method="get">
+
+    <input    
+    type="text"
+    name ="q"
+    placeholder="search..."
+    value = "{{query}}"
+    
+    >
+
+   <select name="sort" id="">
+      <option value="name" {% if sort_by == "name" %} selected {%endif%}>sort by name</option>
+      <option value="age" {%if sort_by == "age"%} selected {%endif%}>sort by age</option>
+       <option value="-age" {%if sort_by == "-age"%} selected {%endif%}>sort by age(decreasing)</option>
+   </select>
+    <button type="submit">Apply</button>
+    <a href="?">Reset</a>
+  </form>
   <ul>
-    {% for contact in contacts%}
+    {% for contact in page_obj%}
     <li>
       <!-- <a href="/contacts/{{contact.id}}">  😍 {{contact.name}}</a> -->
-    <a href="{% url 'contact_retrieve' id=contact.id %}">  😍 {{contact.name}}</a>
+    <a href="{% url 'contact_retrieve' id=contact.id %}">  😍 {{contact.name}}</a>  <!--url ('contact_retrieve',id=contact.id ) --> 
+    <a href="{% url 'contact_edit' contact.id%}">✏️Edit</a>    <!--url ('contact_edit', contact.id ) --> 
+    <a href="{% url 'contact_delete' contact.id%}">❌delete</a> 
     </li>
+
     {% empty %}
     <li>no contact</li>
     {% endfor %}
 
   </ul>
 
-  <h1>add new contact </h1>
-  <a href="{% url 'contact_add' %}">add contact</a>
+  <h2> Add new contact😊 </h2>
+  <a href="{% url 'contact_add' %}">  ➕add contact</a>
+  <!-- pagination -->
+  <div>
+    {% if page_obj.has_previous%}
+    <span>
+       <a href="?page=1{% if query%}&q={{query}}{% endif %}{%if sort_by%}&sort={{sort_by}}{%endif%}">
+     ⏮️First
+    </a>
+
+    <a href="?page={{ page_obj.previous_page_number }}{% if query%}&q={{query}}{% endif %}{%if sort_by%}&sort={{sort_by}}{%endif%}">
+     ⬅️Previous
+    </a>
+
+    </span>
+
+    {% endif %}
+    <!-- current page -->
+   <span>
+      page{{page_obj.number}} of {{page_obj.paginator.num_pages}}
+   </span>
+   {% if page_obj.has_next%}
+    <span>
+ <a href="?page={{ page_obj.next_page_number }}{% if query%}&q={{query}}{% endif %}{%if sort_by%}&sort={{sort_by}}{%endif%}">
+    Next➡️
+    </a>
+   <a href="?page={{page_obj.paginator.num_page}}{% if query%}&q={{query}}{% endif %}{%if sort_by%}&sort={{sort_by}}{%endif%}">
+     Last⏭️
+    </a>
+    </span>
+
+    {% endif %}
+  </div>
 </body>
 </html>
